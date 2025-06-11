@@ -1,116 +1,957 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Case Management System</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Analysis Dashboard - May 2025</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4285F4;
+            --primary-dark: #3367D6;
+            --secondary: #FF6B6B;
+            --dark: #2c3e50;
+            --light: #f5f7fa;
+            --gray: #7f8c8d;
+            --light-gray: #e1e5eb;
+            --success: #06D6A0;
+            --warning: #FFD166;
+            --danger: #EF476F;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light-gray);
+            position: relative;
+        }
+        header::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 25%;
+            width: 50%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 2px;
+        }
+        h1 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        h2 {
+            color: var(--primary);
+            font-weight: 600;
+            margin-top: 30px;
+            border-bottom: 1px solid var(--light-gray);
+            padding-bottom: 8px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+        }
+        h2 i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        h3 {
+            color: var(--dark);
+            margin-top: 25px;
+            font-size: 1.3rem;
+        }
+        .executive-summary {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            position: relative;
+            overflow: hidden;
+        }
+        .executive-summary::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--success));
+        }
+        .kpi-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        .kpi-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            border-top: 4px solid var(--primary);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .kpi-card h3 {
+            margin-top: 0;
+            color: var(--gray);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .kpi-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--dark);
+            margin: 10px 0;
+            position: relative;
+            display: inline-block;
+        }
+        .kpi-value::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+            margin: 40px 0;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+        .chart-container h3 {
+            margin-top: 0;
+            color: var(--dark);
+            text-align: center;
+            font-size: 1.4rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .chart-container h3 i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        .insights {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+            margin: 40px 0;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            position: relative;
+        }
+        .insights::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--warning));
+        }
+        .insights h3 {
+            color: var(--primary);
+            margin-top: 0;
+            border-bottom: 1px solid var(--light-gray);
+            padding-bottom: 8px;
+            font-size: 1.4rem;
+        }
+        .recommendations {
+            background: #f8f9fa;
+            border-left: 4px solid var(--success);
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .recommendations h3 {
+            color: var(--success);
+            margin-top: 0;
+            font-size: 1.4rem;
+        }
+        .data-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        .data-point:hover {
+            background-color: rgba(66, 133, 244, 0.05);
+        }
+        .data-point-badge {
+            min-width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        .data-point-content {
+            flex: 1;
+        }
+        .data-point-content strong {
+            color: var(--primary-dark);
+        }
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 10px;
+            font-size: 0.9rem;
+        }
+        .trend-up {
+            color: var(--secondary);
+        }
+        .trend-down {
+            color: var(--success);
+        }
+        .trend-icon {
+            margin-right: 3px;
+        }
+        .date-badge {
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 15px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+        .platform-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .platform-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .platform-tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+        }
+        .platform-tab:hover:not(.active) {
+            border-bottom: 3px solid rgba(66, 133, 244, 0.3);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .complaint-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .complaint-table th, .complaint-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .complaint-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        .complaint-table tr:hover {
+            background-color: rgba(66, 133, 244, 0.05);
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .badge-primary {
+            background-color: rgba(66, 133, 244, 0.1);
+            color: var(--primary);
+        }
+        .badge-danger {
+            background-color: rgba(239, 71, 111, 0.1);
+            color: var(--danger);
+        }
+        .badge-warning {
+            background-color: rgba(255, 209, 102, 0.1);
+            color: #d18a00;
+        }
+        .badge-success {
+            background-color: rgba(6, 214, 160, 0.1);
+            color: var(--success);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .kpi-container {
+                grid-template-columns: 1fr;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .chart-container, .insights, .recommendations {
+                padding: 20px;
+            }
+            .platform-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 5px;
+            }
+            .complaint-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Header with Login -->
-    <header id="header">
-      <h1><i class="fas fa-tasks"></i> Case Management System</h1>
-      <div id="auth-section">
-        <button id="login-btn" class="btn btn-primary">
-          <i class="fab fa-github"></i> Login with GitHub
-        </button>
-        <div id="user-info" class="hidden">
-          <img id="user-avatar" src="" alt="User Avatar">
-          <span id="username"></span>
-          <button id="logout-btn" class="btn btn-secondary">Logout</button>
-        </div>
-      </div>
-    </header>
+    <div class="container">
+        <header>
+            <h1>Complaint Analysis Dashboard</h1>
+            <div class="date-badge">
+                <i class="fas fa-calendar-alt"></i> May 2025 | Updated: June 11, 2025
+            </div>
+        </header>
 
-    <!-- Main Content Area -->
-    <main>
-      <!-- Dashboard View -->
-      <section id="dashboard-view" class="view">
-        <div class="stats-grid">
-          <div class="stat-card" id="total-cases">
-            <h2><i class="fas fa-clipboard-list"></i> Total Cases</h2>
-            <p class="stat-value">0</p>
-          </div>
-          <div class="stat-card" id="open-cases">
-            <h2><i class="fas fa-folder-open"></i> Open Cases</h2>
-            <p class="stat-value">0</p>
-          </div>
-          <div class="stat-card" id="assigned-cases">
-            <h2><i class="fas fa-user-tie"></i> Assigned Cases</h2>
-            <p class="stat-value">0</p>
-          </div>
-          <div class="stat-card" id="management-requests">
-            <h2><i class="fas fa-headset"></i> Management Requests</h2>
-            <p class="stat-value">0</p>
-          </div>
+        <div class="executive-summary">
+            <h2><i class="fas fa-chart-line"></i> Executive Summary</h2>
+            <p>In May 2025, we tracked <strong>169 complaints</strong> across multiple platforms. The data reveals that Google platforms continue to account for the majority of complaints, with <strong>Google Main</strong> being the primary source. BBB complaints remain significant, while internal complaints have increased compared to previous months.</p>
+            
+            <div class="kpi-container">
+                <div class="kpi-card">
+                    <h3>Total Complaints</h3>
+                    <div class="kpi-value">169
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <h3>Google Complaints</h3>
+                    <div class="kpi-value">70</div>
+                </div>
+                <div class="kpi-card">
+                    <h3>BBB Complaints</h3>
+                    <div class="kpi-value">46</div>
+                </div>
+                <div class="kpi-card">
+                    <h3>Internal Complaints</h3>
+                    <div class="kpi-value">40</div>
+                </div>
+            </div>
         </div>
 
-        <div class="tabs">
-          <button class="tab-btn active" data-view="all-cases">All Cases</button>
-          <button class="tab-btn" data-view="my-cases">My Cases</button>
-          <button class="tab-btn" data-view="management">Management</button>
+        <div class="chart-container">
+            <h3><i class="fas fa-chart-bar"></i> Complaint Distribution by Platform</h3>
+            <canvas id="platformChart" height="300"></canvas>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #4285F4;"></div>
+                    <span>Google (70)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #FF6B6B;"></div>
+                    <span>BBB (46)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #FFD166;"></div>
+                    <span>Internal (40)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #06D6A0;"></div>
+                    <span>Consumer Affairs (13)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #073B4C;"></div>
+                    <span>Trustpilot (12)</span>>
+                </div>
+            </div>
+            <div class="data-point">
+                <div class="data-point-badge">1</div>
+                <div class="data-point-content">
+                    <strong>Google Main accounts for 48 complaints</strong>, representing 31% of all complaints
+                </div>
+            </div>
+            <div class="data-point">
+                <div class="data-point-badge">2</div>
+                <div class="data-point-content">
+                    <strong>BBB complaints increased significantly</strong> to 46 complaints (29% of total)
+                </div>
+            </div>
         </div>
 
-        <div id="cases-container" class="cases-grid">
-          <!-- Cases will be loaded here dynamically -->
+        <div class="chart-container">
+            <h3><i class="fas fa-chart-pie"></i> Complaint Categories Breakdown</h3>
+            <canvas id="categoryChart" height="400"></canvas>
+            <div class="data-point">
+                <div class="data-point-badge">A</div>
+                <div class="data-point-content">
+                    <strong>Coverage Denied</strong> remains the top complaint category (52 cases, 33% of total)
+                </div>
+            </div>
+            <div class="data-point">
+                <div class="data-point-badge">B</div>
+                <div class="data-point-content">
+                    <strong>Claim Processing Delays</strong> represent the second most common issue (38 cases, 24% of total)
+                </div>
+            </div>
+            <div class="data-point">
+                <div class="data-point-badge">C</div>
+                <div class="data-point-content">
+                    <strong>Customer Service Issues</strong> complaints show an increase (27 cases, 17% of total)
+                </div>
+            </div>
         </div>
-      </section>
 
-      <!-- Case Detail View (hidden by default) -->
-      <section id="case-detail-view" class="view hidden">
-        <button id="back-to-dashboard" class="btn btn-secondary">
-          <i class="fas fa-arrow-left"></i> Back to Dashboard
-        </button>
-        <div id="case-detail-content">
-          <!-- Case details will be loaded here -->
+        <div class="chart-container">
+            <h3><i class="fas fa-map-marked-alt"></i> Regional Complaint Patterns</h3>
+            <canvas id="regionChart" height="300"></canvas>
+            <div class="data-point">
+                <div class="data-point-badge">1</div>
+                <div class="data-point-content">
+                    <strong>National complaints dominate</strong> with 48 Google Main complaints not tied to specific regions
+                </div>
+            </div>
+            <div class="data-point">
+                <div class="data-point-badge">2</div>
+                <div class="data-point-content">
+                    <strong>NJ, MD, and AZ</strong> show the highest concentration of regional complaints
+                </div>
+            </div>
         </div>
-      </section>
-    </main>
 
-    <!-- Modals -->
-    <div id="assign-modal" class="modal hidden">
-      <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h3>Assign Case</h3>
-        <select id="agent-select">
-          <option value="">Select Agent</option>
-          <!-- Agents will be loaded here -->
-        </select>
-        <button id="confirm-assign" class="btn btn-primary">Assign</button>
-      </div>
+        <div class="insights">
+            <h3><i class="fas fa-lightbulb"></i> Critical Insights</h3>
+            <div class="data-point">
+                <div class="data-point-badge">!</div>
+                <div class="data-point-content">
+                    <strong>Google Main complaints are 2.5x more likely</strong> to be about coverage issues than other platforms
+                </div>
+            </div>
+            <div class="data-point">
+                <div class="data-point-badge">!</div>
+                <div class="data-point-content">
+                    <strong>BBB escalation complaints</strong> (Compliance and CEO) account for 11 of their 46 complaints (24%)
+                </div>
+            </div>
+            <div class="data-point">
+                <div class="data-point-badge">!</div>
+                <div class="data-point-content">
+                    <strong>Internal complaints decreased</strong> while external complaints increased significantly
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3><i class="fas fa-calendar-day"></i> Daily Complaint Volume</h3>
+            <canvas id="timelineChart" height="300"></canvas>
+            <div class="data-point">
+                <div class="data-point-badge">1</div>
+                <div class="data-point-content">
+                    <strong>Peak complaint days</strong> occurred on May 15th (12 complaints) and May 22nd (10 complaints)
+                </div>
+            </div>
+            <div class="data-point">
+                <div class="data-point-badge">2</div>
+                <div class="data-point-content">
+                    <strong>Weekend complaints</strong> are 45% lower than weekday complaints, consistent with previous patterns
+                </div>
+            </div>
+        </div>
+
+        <div class="recommendations">
+            <h3><i class="fas fa-clipboard-check"></i> Strategic Recommendations</h3>
+            <div class="data-point">
+                <div class="data-point-badge"><i class="fas fa-check"></i></div>
+                <div class="data-point-content">
+                    <strong>Google Main Response Strategy:</strong> Develop targeted response protocol for high-volume Google Main complaints
+                </div>
+            </div>
+            <div class="data-point">
+                <div class="data-point-badge"><i class="fas fa-check"></i></div>
+                <div class="data-point-content">
+                    <strong>BBB Escalation Review:</strong> Analyze root causes of Compliance and CEO escalations
+                </div>
+            </div>
+            <div class="data-point">
+                <div class="data-point-badge"><i class="fas fa-check"></i></div>
+                <div class="data-point-content">
+                    <strong>Coverage Clarification:</strong> Enhance policy explanation materials to reduce coverage-related complaints
+                </div>
+            </div>
+            <div class="data-point">
+                <div class="data-point-badge"><i class="fas fa-check"></i></div>
+                <div class="data-point-content">
+                    <strong>Regional Focus:</strong> Implement regional-specific interventions for NJ, MD, and AZ markets
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3><i class="fas fa-table"></i> Complaint Details by Platform</h3>
+            <div class="platform-tabs">
+                <div class="platform-tab active" data-tab="all">All Complaints</div>
+                <div class="platform-tab" data-tab="google">Google</div>
+                <div class="platform-tab" data-tab="bbb">BBB</div>
+                <div class="platform-tab" data-tab="trustpilot">Trustpilot</div>
+                <div class="platform-tab" data-tab="internal">Internal</div>
+            </div>
+            
+            <div class="tab-content active" id="all-tab">
+                <table class="complaint-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Platform</th>
+                            <th>Category</th>
+                            <th>Region</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>May 15</td>
+                            <td><span class="badge badge-primary">Google Main</span></td>
+                            <td><span class="badge badge-danger">Coverage Denied</span></td>
+                            <td>National</td>
+                        </tr>
+                        <tr>
+                            <td>May 22</td>
+                            <td><span class="badge badge-warning">BBB Complaint</span></td>
+                            <td><span class="badge badge-danger">Claim Delays</span></td>
+                            <td>National</td>
+                        </tr>
+                        <tr>
+                            <td>May 08</td>
+                            <td><span class="badge badge-success">Internal</span></td>
+                            <td><span class="badge badge-danger">Poor Communication</span></td>
+                            <td>National</td>
+                        </tr>
+                        <tr>
+                            <td>May 17</td>
+                            <td><span class="badge badge-primary">Google NJ</span></td>
+                            <td><span class="badge badge-danger">Coverage Denied</span></td>
+                            <td>New Jersey</td>
+                        </tr>
+                        <tr>
+                            <td>May 19</td>
+                            <td><span class="badge badge-primary">Google MD</span></td>
+                            <td><span class="badge badge-warning">Labor Not Covered</span></td>
+                            <td>Maryland</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="tab-content" id="google-tab">
+                <table class="complaint-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Sub-Platform</th>
+                            <th>Category</th>
+                            <th>Region</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>May 15</td>
+                            <td>Google Main</td>
+                            <td><span class="badge badge-danger">Coverage Denied</span></td>
+                            <td>National</td>
+                        </tr>
+                        <tr>
+                            <td>May 17</td>
+                            <td>Google NJ</td>
+                            <td><span class="badge badge-danger">Coverage Denied</span></td>
+                            <td>New Jersey</td>
+                        </tr>
+                        <tr>
+                            <td>May 19</td>
+                            <td>Google MD</td>
+                            <td><span class="badge badge-warning">Labor Not Covered</span></td>
+                            <td>Maryland</td>
+                        </tr>
+                        <tr>
+                            <td>May 10</td>
+                            <td>Google AZ</td>
+                            <td><span class="badge badge-warning">Misled During Sales Call</span></td>
+                            <td>Arizona</td>
+                        </tr>
+                        <tr>
+                            <td>May 26</td>
+                            <td>Google SC</td>
+                            <td><span class="badge badge-danger">Coverage Denied</span></td>
+                            <td>South Carolina</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="tab-content" id="bbb-tab">
+                <table class="complaint-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>May 22</td>
+                            <td><span class="badge badge-danger">Claim Delays</span></td>
+                            <td>Multiple complaints about extended processing times</td>
+                        </tr>
+                        <tr>
+                            <td>May 13</td>
+                            <td><span class="badge badge-warning">Compliance Escalation</span></td>
+                            <td>Regulatory compliance concern raised</td>
+                        </tr>
+                        <tr>
+                            <td>May 01</td>
+                            <td><span class="badge badge-danger">Coverage Denied</span></td>
+                            <td>Initial claim denial disputed</td>
+                        </tr>
+                        <tr>
+                            <td>May 20</td>
+                            <td><span class="badge badge-danger">CEO Escalation</span></td>
+                            <td>Executive-level complaint</td>
+                        </tr>
+                        <tr>
+                            <td>May 28</td>
+                            <td><span class="badge badge-danger">BBB Review</span></td>
+                            <td>Negative review posted</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <div id="status-modal" class="modal hidden">
-      <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h3>Update Status</h3>
-        <select id="status-select">
-          <option value="open">Open</option>
-          <option value="removed">Removed</option>
-          <option value="loss">Loss</option>
-          <option value="utr">Unable To Reach</option>
-        </select>
-        <button id="confirm-status" class="btn btn-primary">Update</button>
-      </div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Platform distribution data
+            const platformData = {
+                labels: ['Google', 'BBB', 'Internal', 'Consumer Affairs', 'Trustpilot'],
+                datasets: [{
+                    data: [70, 46, 40, 13, 12],
+                    backgroundColor: ['#4285F4', '#FF6B6B', '#FFD166', '#06D6A0', '#073B4C'],
+                    borderWidth: 0,
+                    borderRadius: 6
+                }]
+            };
 
-    <div id="management-modal" class="modal hidden">
-      <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h3>Request Management Assistance</h3>
-        <textarea id="management-reason" placeholder="Please describe what assistance is needed..."></textarea>
-        <button id="confirm-management" class="btn btn-primary">Submit Request</button>
-      </div>
-    </div>
-  </div>
+            // Category breakdown data
+            const categoryData = {
+                labels: ['Coverage Denied', 'Claim Delays', 'Customer Service', 'Labor Not Covered', 'Misled During Sales', 'Other'],
+                datasets: [{
+                    label: 'Complaints',
+                    data: [52, 38, 27, 12, 8, 20],
+                    backgroundColor: '#4285F4',
+                    borderColor: '#4285F4',
+                    borderWidth: 0,
+                    borderRadius: 6
+                }]
+            };
 
-  <!-- JavaScript Files -->
-  <script src="scripts/utils.js"></script>
-  <script src="scripts/auth.js"></script>
-  <script src="scripts/github-api.js"></script>
-  <script src="scripts/dashboard.js"></script>
-  <script src="scripts/cases.js"></script>
+            // Regional data
+            const regionData = {
+                labels: ['National', 'NJ', 'MD', 'AZ', 'SC', 'CA', 'FL', 'NV', 'GA', 'NC', 'Other'],
+                datasets: [{
+                    label: 'Coverage Issues',
+                    data: [35, 4, 3, 2, 2, 2, 1, 1, 0, 0, 2],
+                    backgroundColor: '#EF476F',
+                    borderColor: '#EF476F',
+                    borderWidth: 0,
+                    borderRadius: 6
+                }, {
+                    label: 'Claim Delays',
+                    data: [28, 3, 2, 1, 1, 1, 1, 1, 1, 0, 5],
+                    backgroundColor: '#4285F4',
+                    borderColor: '#4285F4',
+                    borderWidth: 0,
+                    borderRadius: 6
+                }, {
+                    label: 'Customer Service',
+                    data: [15, 2, 1, 0, 0, 0, 1, 1, 0, 1, 6],
+                    backgroundColor: '#FFD166',
+                    borderColor: '#FFD166',
+                    borderWidth: 0,
+                    borderRadius: 6
+                }]
+            };
+
+            // Timeline data
+            const timelineData = {
+                labels: Array.from({length: 31}, (_, i) => `May ${i+1}`),
+                datasets: [{
+                    label: 'Daily Complaints',
+                    data: [
+                        2, 1, 3, 2, 4, 1, 6, 3, 2, 5, 
+                        1, 3, 4, 3, 12, 4, 2, 1, 5, 8, 
+                        3, 10, 7, 2, 3, 6, 4, 9, 3, 2, 
+                        1
+                    ],
+                    backgroundColor: '#4285F4',
+                    borderColor: '#3367D6',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }]
+            };
+
+            // Create charts
+            new Chart(
+                document.getElementById('platformChart').getContext('2d'),
+                {
+                    type: 'bar',
+                    data: platformData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                enabled: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.parsed.y} complaints (${Math.round(context.parsed.y / 157 * 100)}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: { 
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    stepSize: 10
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        }
+                    }
+                }
+            );
+
+            new Chart(
+                document.getElementById('categoryChart').getContext('2d'),
+                {
+                    type: 'bar',
+                    data: categoryData,
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                enabled: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.parsed.x} complaints (${Math.round(context.parsed.x / 157 * 100)}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { 
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    stepSize: 5
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        }
+                    }
+                }
+            );
+
+            new Chart(
+                document.getElementById('regionChart').getContext('2d'),
+                {
+                    type: 'bar',
+                    data: regionData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                enabled: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.parsed.y} complaints`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: { 
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    stepSize: 2
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                stacked: true
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        }
+                    }
+                }
+            );
+
+            new Chart(
+                document.getElementById('timelineChart').getContext('2d'),
+                {
+                    type: 'line',
+                    data: timelineData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                enabled: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.parsed.y} complaints on ${context.label}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: { 
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    stepSize: 2
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        }
+                    }
+                }
+            );
+
+            // Tab functionality
+            const tabs = document.querySelectorAll('.platform-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and content
+                    document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
