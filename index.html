@@ -1,798 +1,724 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complaint Analysis Dashboard - May 2025</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #4285F4;
-            --primary-dark: #3367D6;
-            --secondary: #FF6B6B;
-            --dark: #2c3e50;
-            --light: #f5f7fa;
-            --gray: #7f8c8d;
-            --light-gray: #e1e5eb;
-            --success: #06D6A0;
-            --warning: #FFD166;
-            --danger: #EF476F;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8fafc;
-            color: var(--dark);
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px;
-        }
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--light-gray);
-            position: relative;
-        }
-        header::after {
-            content: "";
-            position: absolute;
-            bottom: -2px;
-            left: 25%;
-            width: 50%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--success));
-            border-radius: 2px;
-        }
-        h1 {
-            color: var(--dark);
-            margin-bottom: 10px;
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, var(--primary), var(--success));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: inline-block;
-        }
-        h2 {
-            color: var(--primary);
-            font-weight: 600;
-            margin-top: 30px;
-            border-bottom: 1px solid var(--light-gray);
-            padding-bottom: 8px;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-        }
-        h2 i {
-            margin-right: 10px;
-            font-size: 1.5rem;
-        }
-        h3 {
-            color: var(--dark);
-            margin-top: 25px;
-            font-size: 1.3rem;
-        }
-        .executive-summary {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-            margin-bottom: 40px;
-            border: 1px solid rgba(0, 0, 0, 0.03);
-            position: relative;
-            overflow: hidden;
-        }
-        .executive-summary::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(to bottom, var(--primary), var(--success));
-        }
-        .kpi-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 25px;
-            margin: 30px 0;
-        }
-        .kpi-card {
-            background: white;
-            border-radius: 10px;
-            padding: 25px 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-            text-align: center;
-            border-top: 4px solid var(--primary);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .kpi-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
-        .kpi-card h3 {
-            margin-top: 0;
-            color: var(--gray);
-            font-size: 1rem;
-            font-weight: 500;
-        }
-        .kpi-value {
-            font-size: 2.2rem;
-            font-weight: bold;
-            color: var(--dark);
-            margin: 10px 0;
-            position: relative;
-            display: inline-block;
-        }
-        .kpi-value::after {
-            content: "";
-            position: absolute;
-            bottom: -8px;
-            left: 25%;
-            width: 50%;
-            height: 3px;
-            background: var(--primary);
-            border-radius: 3px;
-        }
-        .chart-container {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-            margin: 40px 0;
-            border: 1px solid rgba(0, 0, 0, 0.03);
-        }
-        .chart-container h3 {
-            margin-top: 0;
-            color: var(--dark);
-            text-align: center;
-            font-size: 1.4rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .chart-container h3 i {
-            margin-right: 10px;
-            color: var(--primary);
-        }
-        .insights {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-            margin: 40px 0;
-            border: 1px solid rgba(0, 0, 0, 0.03);
-            position: relative;
-        }
-        .insights::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(to bottom, var(--primary), var(--warning));
-        }
-        .insights h3 {
-            color: var(--primary);
-            margin-top: 0;
-            border-bottom: 1px solid var(--light-gray);
-            padding-bottom: 8px;
-            font-size: 1.4rem;
-        }
-        .recommendations {
-            background: #f8f9fa;
-            border-left: 4px solid var(--success);
-            padding: 30px;
-            margin: 40px 0;
-            border-radius: 0 12px 12px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-        .recommendations h3 {
-            color: var(--success);
-            margin-top: 0;
-            font-size: 1.4rem;
-        }
-        .data-point {
-            display: flex;
-            align-items: flex-start;
-            margin: 20px 0;
-            padding: 15px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
-        .data-point:hover {
-            background-color: rgba(66, 133, 244, 0.05);
-        }
-        .data-point-badge {
-            min-width: 28px;
-            height: 28px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-weight: bold;
-            flex-shrink: 0;
-            font-size: 0.9rem;
-        }
-        .data-point-content {
-            flex: 1;
-        }
-        .data-point-content strong {
-            color: var(--primary-dark);
-        }
-        .trend-indicator {
-            display: inline-flex;
-            align-items: center;
-            margin-left: 10px;
-            font-size: 0.9rem;
-        }
-        .trend-up {
-            color: var(--secondary);
-        }
-        .trend-down {
-            color: var(--success);
-        }
-        .trend-icon {
-            margin-right: 3px;
-        }
-        .date-badge {
-            background: var(--primary);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            display: inline-block;
-            margin-bottom: 15px;
-        }
-        .chart-legend {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
-            gap: 15px;
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            font-size: 0.9rem;
-        }
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 3px;
-            margin-right: 8px;
-        }
-        .platform-tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--light-gray);
-        }
-        .platform-tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-        .platform-tab.active {
-            border-bottom: 3px solid var(--primary);
-            color: var(--primary);
-        }
-        .platform-tab:hover:not(.active) {
-            border-bottom: 3px solid rgba(66, 133, 244, 0.3);
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .complaint-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .complaint-table th, .complaint-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--light-gray);
-        }
-        .complaint-table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            color: var(--dark);
-        }
-        .complaint-table tr:hover {
-            background-color: rgba(66, 133, 244, 0.05);
-        }
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        .badge-primary {
-            background-color: rgba(66, 133, 244, 0.1);
-            color: var(--primary);
-        }
-        .badge-danger {
-            background-color: rgba(239, 71, 111, 0.1);
-            color: var(--danger);
-        }
-        .badge-warning {
-            background-color: rgba(255, 209, 102, 0.1);
-            color: #d18a00;
-        }
-        .badge-success {
-            background-color: rgba(6, 214, 160, 0.1);
-            color: var(--success);
-        }
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            .kpi-container {
-                grid-template-columns: 1fr;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            .chart-container, .insights, .recommendations {
-                padding: 20px;
-            }
-            .platform-tabs {
-                overflow-x: auto;
-                white-space: nowrap;
-                padding-bottom: 5px;
-            }
-            .complaint-table {
-                display: block;
-                overflow-x: auto;
-            }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Monthly Complaint & Review Report — June 2025</title>
+<style>
+  :root {
+    --primary-color: #004080;
+    --secondary-color: #0070c0;
+    --accent-color: #00509e;
+    --light-bg: #f4f7fb;
+    --card-bg: #fff;
+    --text-dark: #2e3a59;
+    --text-medium: #35435c;
+    --text-light: #405472;
+    --border-color: #dde3ec;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.1);
+    --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
+    --shadow-lg: 0 15px 50px rgba(0,0,0,0.12);
+    --gradient-blue: linear-gradient(135deg, #004080 0%, #0070c0 100%);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--light-bg);
+    color: var(--text-dark);
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  header {
+    background: var(--gradient-blue);
+    color: #fff;
+    padding: 2rem 2rem 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+  }
+
+  header h1 {
+  font-weight: 900;
+  font-size: 2.6rem;
+  margin: 0.5rem 0 0.8rem;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: #ffffff;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 8px rgba(255, 255, 255, 0.2);
+}
+header p {
+  font-size: 1rem;
+  margin: 0.5rem 0 0.8rem;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: #ffffff;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+  header p strong {
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  header p strong::after {
+    content: "|";
+    margin-left: 1rem;
+    opacity: 0.5;
+  }
+
+  header p strong:last-child::after {
+    display: none;
+  }
+
+  main {
+    max-width: 1024px;
+    margin: 3rem auto 5rem;
+    background: var(--card-bg);
+    padding: 3rem 4rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    position: relative;
+  }
+
+  main::after {
+    content: "";
+    position: absolute;
+    bottom: -20px;
+    left: 5%;
+    right: 5%;
+    height: 20px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.05), transparent);
+    border-radius: 0 0 12px 12px;
+    filter: blur(5px);
+    z-index: -1;
+  }
+
+  h1, h2, h3 {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  h2 {
+    border-bottom: 3px solid var(--secondary-color);
+    padding-bottom: 0.5rem;
+    margin-top: 2.5rem;
+    font-size: 1.8rem;
+    position: relative;
+  }
+
+  h2::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--secondary-color), rgba(0,112,192,0.3));
+  }
+
+  h3 {
+    margin-top: 2.2rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    font-size: 1.4rem;
+  }
+
+  p {
+    margin: 1.2rem 0;
+    color: var(--text-medium);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 2rem 0 3rem;
+    font-size: 1rem;
+    box-shadow: var(--shadow-sm);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  thead tr {
+    background: var(--secondary-color);
+    color: #fff;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  thead th {
+    padding: 1rem 1.2rem;
+    border: none;
+    position: relative;
+  }
+
+  thead th:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: rgba(255,255,255,0.3);
+  }
+
+  tbody tr {
+    background: #f9fbff;
+    transition: var(--transition);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  tbody tr:nth-child(even) {
+    background: #f2f7ff;
+  }
+
+  tbody tr:hover {
+    background-color: #e6f0ff;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(0,112,192,0.1);
+  }
+
+  tbody td {
+    padding: 1rem 1.2rem;
+    text-align: center;
+    color: var(--text-medium);
+    font-weight: 500;
+    border: none;
+  }
+
+  tbody td:first-child {
+    font-weight: 600;
+    text-align: left;
+    color: var(--primary-color);
+  }
+
+  ul {
+    margin: 1.5rem 0 2rem;
+    padding-left: 1.2rem;
+    color: var(--text-light);
+    list-style-type: none;
+  }
+
+  ul li {
+    margin-bottom: 0.8rem;
+    position: relative;
+    padding-left: 1.8rem;
+    line-height: 1.6;
+  }
+
+  ul li::before {
+    content: "•";
+    color: var(--secondary-color);
+    font-size: 1.8rem;
+    position: absolute;
+    left: 0;
+    top: -0.3rem;
+  }
+
+  ul li strong {
+    color: var(--primary-color);
+  }
+
+  canvas {
+    max-width: 100%;
+    margin: 1.5rem 0 1.2rem;
+    box-shadow: 0 4px 20px rgba(0,112,192,0.15);
+    border-radius: 10px;
+    background: white;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+  }
+
+  canvas:hover {
+    box-shadow: 0 8px 30px rgba(0,112,192,0.25);
+  }
+
+  .chart-container {
+    margin-bottom: 3.5rem;
+    position: relative;
+  }
+
+  .chart-container::after {
+    content: "";
+    position: absolute;
+    bottom: -1.5rem;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border-color), transparent);
+  }
+
+  .chart-container:last-child::after {
+    display: none;
+  }
+
+  button.export-btn {
+    background-color: var(--secondary-color);
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.8rem;
+    margin: 0.8rem 0 1.5rem;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 5px 15px rgba(0,112,192,0.3);
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  button.export-btn:hover {
+    background-color: #005a9c;
+    box-shadow: 0 8px 25px rgba(0,90,156,0.4);
+    transform: translateY(-2px);
+  }
+
+  button.export-btn:active {
+    transform: translateY(0);
+  }
+
+  button.export-btn::before {
+    content: "↓";
+    font-size: 1.1em;
+  }
+
+  #downloadPDF {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    margin: 3rem auto 1rem;
+    font-size: 1.1rem;
+    background: var(--primary-color);
+  }
+
+  #downloadPDF:hover {
+    background: #003366;
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: 0.9rem;
+    color: #9ca7b8;
+    border-top: 1px solid var(--border-color);
+    background: #f9fbff;
+    margin-top: 3rem;
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  section {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  section:nth-child(1) { animation-delay: 0.1s; }
+  section:nth-child(2) { animation-delay: 0.2s; }
+  section:nth-child(3) { animation-delay: 0.3s; }
+  section:nth-child(4) { animation-delay: 0.4s; }
+  section:nth-child(5) { animation-delay: 0.5s; }
+  section:nth-child(6) { animation-delay: 0.6s; }
+
+  /* Responsive Design */
+  @media (max-width: 900px) {
+    main {
+      padding: 2.5rem 3rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    main {
+      padding: 2rem;
+      margin: 1.5rem auto 3rem;
+      border-radius: 8px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+    }
+
+    table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    button.export-btn {
+      width: 100%;
+      padding: 1rem;
+      justify-content: center;
+    }
+
+    ul li {
+      padding-left: 1.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    main {
+      padding: 1.8rem 1.5rem;
+    }
+
+    header h1 {
+      font-size: 1.7rem;
+    }
+
+    header p {
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    header p strong::after {
+      display: none;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+    }
+
+    thead th, tbody td {
+      padding: 0.8rem 0.6rem;
+      font-size: 0.9rem;
+    }
+  }
+
+  /* Print Styles */
+  @media print {
+    body {
+      background: white;
+      font-size: 14px;
+    }
+
+    header {
+      padding: 1rem;
+      box-shadow: none;
+      break-after: avoid;
+    }
+
+    main {
+      box-shadow: none;
+      padding: 0;
+      margin: 0;
+      max-width: 100%;
+    }
+
+    button.export-btn {
+      display: none;
+    }
+
+    canvas {
+      box-shadow: none;
+      border: 1px solid #ddd;
+      max-width: 90%;
+      margin: 1rem auto;
+    }
+
+    footer {
+      display: none;
+    }
+
+    @page {
+      margin: 1cm;
+    }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Complaint Analysis Dashboard</h1>
-            <div class="date-badge">
-                <i class="fas fa-calendar-alt"></i> May 2025 | Updated: June 11, 2025
-            </div>
-        </header>
 
-        <div class="executive-summary">
-            <h2><i class="fas fa-chart-line"></i> Executive Summary</h2>
-            <p>In May 2025, we tracked <strong>169 complaints</strong> across multiple platforms. The data reveals that Google platforms continue to account for the majority of complaints, with <strong>Google Main</strong> being the primary source. BBB complaints remain significant, while internal complaints have increased compared to previous months.</p>
-            
-            <div class="kpi-container">
-                <div class="kpi-card">
-                    <h3>Total Complaints</h3>
-                    <div class="kpi-value">169
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <h3>Total Reviews Removed</h3>
-                    <div class="kpi-value">94</div>
-                </div>
-                <div class="kpi-card">
-                    <h3>Google Complaints</h3>
-                    <div class="kpi-value">70</div>
-                </div>
-                <div class="kpi-card">
-                    <h3>BBB Complaints</h3>
-                    <div class="kpi-value">30</div>
-                </div>
-                <div class="kpi-card">
-                    <h3>Internal Complaints</h3>
-                    <div class="kpi-value">40
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <h3>CEO / Compliance Escalations</h3>
-                    <div class="kpi-value">11
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <h3>BBB Reviews</h3>
-                    <div class="kpi-value">5
-                    </div>
-                </div>
-            </div>
-        </div>
+<header>
+  <h1>Monthly Complaint & Review Report — June 2025</h1>
+  <p><strong>Date:</strong> July 2, 2025</p>
+</header>
 
-        <div class="chart-container">
-            <h3><i class="fas fa-chart-bar"></i> Complaint Distribution by Platform</h3>
-            <canvas id="platformChart" height="300"></canvas>
-            <div class="chart-legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #4285F4;"></div>
-                    <span>Google (70)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #FF6B6B;"></div>
-                    <span>Internal (40)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #FFD166;"></div>
-                    <span>BBB (30)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #06D6A0;"></div>
-                    <span>Consumer Affairs (13)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #073B4C;"></div>
-                    <span>Trustpilot (12)</span>>
-                </div>
-            </div>
-            <div class="data-point">
-                <div class="data-point-badge">1</div>
-                <div class="data-point-content">
-                    <strong>Google Main accounts for 70 complaints</strong>, representing 41% of all complaints
-                </div>
-            </div>
-            <div class="data-point">
-                <div class="data-point-badge">2</div>
-                <div class="data-point-content">
-                    <strong>BBB complaints increased significantly</strong> to 35 complaints (18% of total)
-                </div>
-            </div>
-        </div>
+<main id="report-content">
+  <section class="executive-summary">
+    <h2>Executive Summary</h2>
+    <p>This report analyzes complaint categories across three sources for June 2025:</p>
+    <ul>
+      <li><strong>BBB Complaints</strong></li>
+      <li><strong>All Reviews</strong> (public feedback)</li>
+      <li><strong>Internal Reports</strong></li>
+    </ul>
+    <p>The goal is to identify frequent issues impacting customer satisfaction and operational performance to guide targeted improvements.</p>
+  </section>
 
-        <div class="chart-container">
-            <h3><i class="fas fa-chart-pie"></i> Complaint Categories Breakdown</h3>
-            <canvas id="categoryChart" height="400"></canvas>
-            <div class="data-point">
-                <div class="data-point-badge">A</div>
-                <div class="data-point-content">
-                    <strong>Coverage Denied</strong> remains the top complaint category (52 cases, 33% of total)
-                </div>
-            </div>
-            <div class="data-point">
-                <div class="data-point-badge">B</div>
-                <div class="data-point-content">
-                    <strong>Claim Processing Delays</strong> represent the second most common issue (38 cases, 24% of total)
-                </div>
-            </div>
-            <div class="data-point">
-                <div class="data-point-badge">C</div>
-                <div class="data-point-content">
-                    <strong>Customer Service Issues</strong> complaints show an increase (27 cases, 17% of total)
-                </div>
-            </div>
-        </div>
+  <section class="data-summary">
+    <h2>Data Summary</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>BBB Complaints</th>
+          <th>All Reviews</th>
+          <th>Internal Reports</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Low Contribution</td><td>1</td><td>23</td><td>10</td></tr>
+        <tr><td>Technician Delays</td><td>2</td><td>17</td><td>20</td></tr>
+        <tr><td>Misled During Sales Call</td><td>2</td><td>16</td><td>5</td></tr>
+        <tr><td>Labor Not Covered</td><td>2</td><td>17</td><td>3</td></tr>
+        <tr><td>Claim Delays</td><td>6</td><td>46</td><td>20</td></tr>
+        <tr><td>Coverage Denied</td><td>3</td><td>3</td><td>0</td></tr>
+        <tr><td>Parts/Unit Error</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>Poor Communication</td><td>8</td><td>37</td><td>4</td></tr>
+      </tbody>
+    </table>
+  </section>
 
-        <div class="chart-container">
-            <h3><i class="fas fa-map-marked-alt"></i> Regional Complaint Patterns</h3>
-            <canvas id="regionChart" height="300"></canvas>
-            <div class="data-point">
-                <div class="data-point-badge">1</div>
-                <div class="data-point-content">
-                    <strong>National complaints dominate</strong> with 48 Google Main complaints not tied to specific regions
-                </div>
-            </div>
-            <div class="data-point">
-                <div class="data-point-badge">2</div>
-                <div class="data-point-content">
-                    <strong>NJ, MD, and AZ</strong> show the highest concentration of regional complaints
-                </div>
-            </div>
-        </div>
+  <section class="key-insights">
+    <h2>Key Insights</h2>
+    <ul>
+      <li><strong>Claim Delays</strong> is the most frequent complaint across all data sources, indicating a key area for improvement.</li>
+      <li><strong>Poor Communication</strong> is prominent in external reviews and BBB complaints, signaling need for better customer communication.</li>
+      <li><strong>Technician Delays</strong> show operational challenges impacting customer satisfaction.</li>
+      <li><strong>Coverage Denied</strong> and <strong>Parts/Unit Error</strong> have minimal mentions and are less critical currently.</li>
+      <li><strong>Misled During Sales Call</strong> and <strong>Labor Not Covered</strong> have moderate mentions and warrant monitoring.</li>
+    </ul>
+  </section>
 
-        <div class="insights">
-            <h3><i class="fas fa-lightbulb"></i> Critical Insights</h3>
-            <div class="data-point">
-                <div class="data-point-badge">!</div>
-                <div class="data-point-content">
-                    <strong>Google Main complaints are 2.5x more likely</strong> to be about coverage issues than other platforms
-                </div>
-            </div>
-            <div class="data-point">
-                <div class="data-point-badge">!</div>
-                <div class="data-point-content">
-                    <strong>BBB complaints</strong> 35 Complaints (11 More than last month)
-                </div>
-        </div>
-            </div>
+  <section class="charts">
+    <h2>Visual Analysis</h2>
 
-        <div class="chart-container">
-            <h3><i class="fas fa-calendar-day"></i> Daily Complaint Volume</h3>
-            <canvas id="timelineChart" height="300"></canvas>
-            <div class="data-point">
-                <div class="data-point-badge">1</div>
-                <div class="data-point-content">
-                    <strong>Peak complaint days</strong> occurred on May 15th (12 complaints) and May 22nd (10 complaints)
-                </div>
-            </div>
-            <div class="data-point">
-                <div class="data-point-badge">2</div>
-                <div class="data-point-content">
-                    <strong>Weekend complaints</strong> are 45% lower than weekday complaints, consistent with previous patterns
-                </div>
-            </div>
-        </div>
+    <div class="chart-container">
+      <h3>Complaint Counts by Category Across Data Sources</h3>
+      <canvas id="barChart" aria-label="Complaint Counts by Category" role="img"></canvas>
+      <button class="export-btn" id="downloadBarChart">Download Bar Chart as PNG</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Platform distribution data
-            const platformData = {
-                labels: ['Google', 'Internal', 'BBB', 'Consumer Affairs', 'Trustpilot'],
-                datasets: [{
-                    data: [70, 40, 35, 13, 12],
-                    backgroundColor: ['#4285F4', '#FF6B6B', '#FFD166', '#06D6A0', '#073B4C'],
-                    borderWidth: 0,
-                    borderRadius: 6
-                }]
-            };
+    <div class="chart-container">
+      <h3>Percentage Distribution of Complaint Categories in All Reviews</h3>
+      <canvas id="pieChart" aria-label="Complaint Category Distribution" role="img"></canvas>
+      <button class="export-btn" id="downloadPieChart">Download Pie Chart as PNG</button>
+    </div>
+  </section>
 
-            // Category breakdown data
-            const categoryData = {
-                labels: ['Coverage Denied', 'Claim Delays', 'Customer Service', 'Labor Not Covered', 'Misled During Sales', 'Other'],
-                datasets: [{
-                    label: 'Complaints',
-                    data: [52, 38, 27, 12, 8, 20],
-                    backgroundColor: '#4285F4',
-                    borderColor: '#4285F4',
-                    borderWidth: 0,
-                    borderRadius: 6
-                }]
-            };
+  <section class="recommendations">
+    <h2>Recommendations</h2>
+    <ul>
+      <li><strong>Address Claim Processing Delays:</strong> Streamline the claims workflow to reduce delays and improve customer satisfaction.</li>
+      <li><strong>Improve Communication:</strong> Enhance customer-facing staff training and communication channels for clearer, timely updates.</li>
+      <li><strong>Reduce Technician Delays:</strong> Optimize scheduling and dispatch procedures for quicker technician response times.</li>
+      <li><strong>Sales Transparency:</strong> Improve clarity during sales to reduce misunderstandings about coverage.</li>
+      <li><strong>Monitor Coverage Denied Cases:</strong> Proactively track to prevent escalation despite current low volume.</li>
+    </ul>
+  </section>
 
-            // Regional data
-            const regionData = {
-                labels: ['National', 'NJ', 'MD', 'AZ', 'SC', 'CA', 'FL', 'NV', 'GA', 'NC', 'Other'],
-                datasets: [{
-                    label: 'Coverage Issues',
-                    data: [35, 4, 3, 2, 2, 2, 1, 1, 0, 0, 2],
-                    backgroundColor: '#EF476F',
-                    borderColor: '#EF476F',
-                    borderWidth: 0,
-                    borderRadius: 6
-                }, {
-                    label: 'Claim Delays',
-                    data: [28, 3, 2, 1, 1, 1, 1, 1, 1, 0, 5],
-                    backgroundColor: '#4285F4',
-                    borderColor: '#4285F4',
-                    borderWidth: 0,
-                    borderRadius: 6
-                }, {
-                    label: 'Customer Service',
-                    data: [15, 2, 1, 0, 0, 0, 1, 1, 0, 1, 6],
-                    backgroundColor: '#FFD166',
-                    borderColor: '#FFD166',
-                    borderWidth: 0,
-                    borderRadius: 6
-                }]
-            };
+  <section class="next-steps">
+    <h2>Next Steps</h2>
+    <ul>
+      <li>Develop an action plan targeting claims efficiency and communication improvements.</li>
+      <li>Perform root cause analysis on technician delays.</li>
+      <li>Continue monthly monitoring of complaint trends.</li>
+    </ul>
+  </section>
+</main>
 
-            // Timeline data
-            const timelineData = {
-                labels: Array.from({length: 31}, (_, i) => `May ${i+1}`),
-                datasets: [{
-                    label: 'Daily Complaints',
-                    data: [
-                        2, 1, 3, 2, 4, 1, 6, 3, 2, 5, 
-                        1, 3, 4, 3, 12, 4, 2, 1, 5, 8, 
-                        3, 10, 7, 2, 3, 6, 4, 9, 3, 2, 
-                        1
-                    ],
-                    backgroundColor: '#f2ee0a',
-                    borderColor: '#3367D6',
-                    borderWidth: 2,
-                    tension: 0.3,
-                    fill: true
-                }]
-            };
+<footer>
+  &copy; 2025 Brand Management.
+</footer>
 
-            // Create charts
-            new Chart(
-                document.getElementById('platformChart').getContext('2d'),
-                {
-                    type: 'bar',
-                    data: platformData,
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                enabled: true,
-                                callbacks: {
-                                    label: function(context) {
-                                        return `${context.parsed.y} complaints (${Math.round(context.parsed.y / 157 * 100)}%)`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: { 
-                                beginAtZero: true,
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.05)'
-                                },
-                                ticks: {
-                                    stepSize: 10
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
-                                }
-                            }
-                        },
-                        animation: {
-                            duration: 1000,
-                            easing: 'easeOutQuart'
-                        }
-                    }
-                }
-            );
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- html2pdf CDN -->
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 
-            new Chart(
-                document.getElementById('categoryChart').getContext('2d'),
-                {
-                    type: 'bar',
-                    data: categoryData,
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                enabled: true,
-                                callbacks: {
-                                    label: function(context) {
-                                        return `${context.parsed.x} complaints (${Math.round(context.parsed.x / 157 * 100)}%)`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: { 
-                                beginAtZero: true,
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.05)'
-                                },
-                                ticks: {
-                                    stepSize: 5
-                                }
-                            },
-                            y: {
-                                grid: {
-                                    display: false
-                                }
-                            }
-                        },
-                        animation: {
-                            duration: 1000,
-                            easing: 'easeOutQuart'
-                        }
-                    }
-                }
-            );
+<script>
+  // Data
+  const categories = [
+    "Low Contribution",
+    "Technician Delays",
+    "Misled During Sales Call",
+    "Labor Not Covered",
+    "Claim Delays",
+    "Coverage Denied",
+    "Parts/Unit Error",
+    "Poor Communication"
+  ];
 
-            new Chart(
-                document.getElementById('regionChart').getContext('2d'),
-                {
-                    type: 'bar',
-                    data: regionData,
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    usePointStyle: true,
-                                    padding: 20
-                                }
-                            },
-                            tooltip: {
-                                enabled: true,
-                                callbacks: {
-                                    label: function(context) {
-                                        return `${context.dataset.label}: ${context.parsed.y} complaints`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: { 
-                                beginAtZero: true,
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.05)'
-                                },
-                                ticks: {
-                                    stepSize: 2
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
-                                },
-                                stacked: true
-                            }
-                        },
-                        animation: {
-                            duration: 1000,
-                            easing: 'easeOutQuart'
-                        }
-                    }
-                }
-            );
+  const bbbComplaints = [1, 2, 2, 2, 6, 3, 0, 8];
+  const allReviews = [23, 17, 16, 17, 46, 3, 0, 37];
+  const internalReports = [10, 20, 5, 3, 20, 0, 0, 4];
 
-            new Chart(
-                document.getElementById('timelineChart').getContext('2d'),
-                {
-                    type: 'line',
-                    data: timelineData,
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                enabled: true,
-                                callbacks: {
-                                    label: function(context) {
-                                        return `${context.parsed.y} complaints on ${context.label}`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: { 
-                                beginAtZero: true,
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.05)'
-                                },
-                                ticks: {
-                                    stepSize: 2
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
-                                }
-                            }
-                        },
-                        animation: {
-                            duration: 1000,
-                            easing: 'easeOutQuart'
-                        }
-                    }
-                }
-            );
+  // Bar Chart
+  const ctxBar = document.getElementById('barChart').getContext('2d');
+  const barChart = new Chart(ctxBar, {
+    type: 'bar',
+    data: {
+      labels: categories,
+      datasets: [
+        {
+          label: 'BBB Complaints',
+          data: bbbComplaints,
+          backgroundColor: 'rgba(0,83,156,0.7)'
+        },
+        {
+          label: 'All Reviews',
+          data: allReviews,
+          backgroundColor: 'rgba(0,156,118,0.7)'
+        },
+        {
+          label: 'Internal Reports',
+          data: internalReports,
+          backgroundColor: 'rgba(255, 159, 64, 0.7)'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      stacked: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Number of Complaints'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Complaint Category'
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        tooltip: {
+          enabled: true,
+        }
+      }
+    }
+  });
 
-            // Tab functionality
-            const tabs = document.querySelectorAll('.platform-tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    // Remove active class from all tabs and content
-                    document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    
-                    // Add active class to clicked tab and corresponding content
-                    tab.classList.add('active');
-                    const tabId = tab.getAttribute('data-tab');
-                    document.getElementById(`${tabId}-tab`).classList.add('active');
-                });
-            });
-        });
-    </script>
+  // Pie Chart
+  const ctxPie = document.getElementById('pieChart').getContext('2d');
+  const pieChart = new Chart(ctxPie, {
+    type: 'pie',
+    data: {
+      labels: categories,
+      datasets: [{
+        data: allReviews,
+        backgroundColor: [
+          '#003f5c',
+          '#2f4b7c',
+          '#665191',
+          '#a05195',
+          '#d45087',
+          '#f95d6a',
+          '#ff7c43',
+          '#ffa600'
+        ],
+        borderColor: '#fff',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            boxWidth: 15,
+            padding: 10
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const total = context.dataset.data.reduce((a,b) => a + b, 0);
+              const value = context.parsed;
+              const percentage = ((value / total) * 100).toFixed(1);
+              return `${context.label}: ${value} (${percentage}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Export Bar Chart as PNG
+  document.getElementById('downloadBarChart').addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = 'complaint_counts_bar_chart.png';
+    link.href = barChart.toBase64Image();
+    link.click();
+  });
+
+  // Export Pie Chart as PNG
+  document.getElementById('downloadPieChart').addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = 'complaint_distribution_pie_chart.png';
+    link.href = pieChart.toBase64Image();
+    link.click();
+  });
+
+  // Export Full Report as PDF
+  document.getElementById('downloadPDF').addEventListener('click', () => {
+    const element = document.getElementById('report-content');
+    const opt = {
+      margin:       0.5,
+      filename:     'Monthly_Complaint_Review_Report_June_2025.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    // Use html2pdf to generate PDF
+    html2pdf().set(opt).from(element).save();
+  });
+</script>
+
 </body>
 </html>
