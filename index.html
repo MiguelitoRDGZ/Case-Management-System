@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Negative Review Agenda</title>
+  <style>
+    :root {
+      --primary: #1d3557;
+      --accent: #e63946;
+      --bg: #f1faee;
+      --text: #343a40;
+      --success: #2a9d8f;
+      --warning: #f4a261;
+      --danger: #e76f51;
+      --light: #ffffff;
+      --gray: #ced4da;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: var(--primary);
+      color: var(--light);
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+    }
+
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--gray);
+    }
+
+    th {
+      background-color: var(--primary);
+      color: var(--light);
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--light);
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      width: 600px;
+      max-width: 90%;
+      z-index: 999;
+    }
+
+    .popup textarea {
+      width: 100%;
+      height: 150px;
+      margin-top: 1rem;
+      padding: 0.5rem;
+    }
+
+    .popup-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .close-btn {
+      cursor: pointer;
+      font-weight: bold;
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    🛠️ Negative Review Agenda
+  </header>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Create Approach</th>
+        <th>Customer Name</th>
+        <th>Policy Number</th>
+        <th>Policy Term</th>
+        <th>Total Claims</th>
+        <th>RA's Sent</th>
+        <th>Total Expenses</th>
+        <th>Total In-House</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><button class="btn" onclick="openPopup('John Doe')">Create</button></td>
+        <td>John Doe</td>
+        <td>THG123456789</td>
+        <td>1 Year</td>
+        <td>3</td>
+        <td>1</td>
+        <td>$700.00</td>
+        <td>$250.00</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div id="popup" class="popup">
+    <div class="popup-header">
+      <h3>Create Approach</h3>
+      <span class="close-btn" onclick="closePopup()">&times;</span>
+    </div>
+    <div id="popup-content">
+      <p>The customer has a <strong>1 Year</strong> policy for an agreement price in the amount of <strong>$500.00</strong>. Policy started on <strong>01/01/2025</strong>.</p>
+      <p>Up to date, the customer has paid <strong>$500.00</strong> in premiums, and <strong>$255.00</strong> in PCFs (3 claims × $85), totaling <strong>$755.00</strong>.</p>
+      <p><strong>Claim Expenses:</strong></p>
+      <ul>
+        <li>TN:HE-000000001 – $200.00 paid to Technician</li>
+        <li>TN:HE-000000002 – $300.00 paid to Supplier</li>
+        <li>TN:HE-000000003 – $200.00 payout to Customer</li>
+      </ul>
+      <p><strong>We have in-house:</strong> $55.00</p>
+      <textarea placeholder="Our approach..."></textarea>
+      <br><br>
+      <button class="btn">Save Approach</button>
+    </div>
+  </div>
+
+  <script>
+    function openPopup(name) {
+      document.getElementById('popup').style.display = 'block';
+    }
+    function closePopup() {
+      document.getElementById('popup').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
