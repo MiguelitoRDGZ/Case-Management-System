@@ -1,162 +1,894 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Negative Review Agenda</title>
-  <style>
-    :root {
-      --primary: #1d3557;
-      --accent: #e63946;
-      --bg: #f1faee;
-      --text: #343a40;
-      --success: #2a9d8f;
-      --warning: #f4a261;
-      --danger: #e76f51;
-      --light: #ffffff;
-      --gray: #ced4da;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Management - Negative Review Agenda</title>
+    <style>
+        :root {
+            --header-color: #003049;
+            --button-color: #d62828;
+            --background-color: #e9ecef;
+            --row-alt-color: #f1f3f5;
+            --text-color: #333;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        
+        .container {
+            padding: 20px;
+        }
+        
+        .header {
+            background-color: var(--header-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .module-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .module-subtitle {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toolbar {
+            background: white;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        select, input, button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        
+        button {
+            background-color: var(--button-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        .search-bar {
+            margin-left: auto;
+            display: flex;
+        }
+        
+        .search-bar input {
+            width: 250px;
+        }
+        
+        .content-area {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:nth-child(even) {
+            background-color: var(--row-alt-color);
+        }
+        
+        tr:hover {
+            background-color: #e2e5e9;
+        }
+        
+        .btn {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--header-color);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .template-text {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            border-left: 4px solid var(--button-color);
+        }
+        
+        .expense-section {
+            margin: 20px 0;
+        }
+        
+        .expense-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .expense-label {
+            width: 200px;
+        }
+        
+        .expense-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .in-house-display {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 20px 0;
+            padding: 10px;
+            background: #f0f8ff;
+            border-radius: 4px;
+            text-align: right;
+        }
+        
+        .approach-section {
+            margin: 20px 0;
+        }
+        
+        .approach-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        .agent-assignment {
+            margin: 20px 0;
+        }
+        
+        .agent-select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            margin-right: 10px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            align-items: center;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+        
+        .page-size {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .highlight {
+            color: var(--button-color);
+            font-weight: 600;
+        }
+        
+        .approach-text {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .approach-text:hover {
+            white-space: normal;
+            overflow: visible;
+            position: absolute;
+            background: white;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+            max-width: 400px;
+        }
+        
+        .policy-note {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid var(--button-color);
+            font-style: italic;
+        }
+        
+        .review-outcome-section {
+            margin-top: 20px;
+            display: none;
+        }
 
-    body {
-      font-family: Arial, sans-serif;
-      background-color: var(--bg);
-      margin: 0;
-      padding: 0;
-    }
+        .review-outcome-section select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
 
-    header {
-      background-color: var(--primary);
-      color: var(--light);
-      padding: 1rem;
-      text-align: center;
-      font-size: 1.5rem;
-    }
+        .new-rating-group {
+            display: none;
+            margin-top: 10px;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 2rem 0;
-    }
-
-    th, td {
-      padding: 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid var(--gray);
-    }
-
-    th {
-      background-color: var(--primary);
-      color: var(--light);
-    }
-
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-
-    .btn {
-      padding: 0.5rem 1rem;
-      background-color: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .popup {
-      display: none;
-      position: fixed;
-      top: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: var(--light);
-      padding: 1.5rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      width: 600px;
-      max-width: 90%;
-      z-index: 999;
-    }
-
-    .popup textarea {
-      width: 100%;
-      height: 150px;
-      margin-top: 1rem;
-      padding: 0.5rem;
-    }
-
-    .popup-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .close-btn {
-      cursor: pointer;
-      font-weight: bold;
-      color: var(--accent);
-    }
-  </style>
+        .new-rating-group select {
+            width: 100%;
+            padding: 8px;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-failed {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    🛠️ Negative Review Agenda
-  </header>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Create Approach</th>
-        <th>Customer Name</th>
-        <th>Policy Number</th>
-        <th>Policy Term</th>
-        <th>Total Claims</th>
-        <th>RA's Sent</th>
-        <th>Total Expenses</th>
-        <th>Total In-House</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><button class="btn" onclick="openPopup('John Doe')">Create</button></td>
-        <td>John Doe</td>
-        <td>THG123456789</td>
-        <td>1 Year</td>
-        <td>3</td>
-        <td>1</td>
-        <td>$700.00</td>
-        <td>$250.00</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div id="popup" class="popup">
-    <div class="popup-header">
-      <h3>Create Approach</h3>
-      <span class="close-btn" onclick="closePopup()">&times;</span>
+    <div class="header">
+        <div>
+            <div class="module-title">Brand Management Module</div>
+            <div class="module-subtitle">Negative Review Agenda</div>
+        </div>
+        <div class="user-info">
+            <div class="checkbox-group">
+                <input type="checkbox" id="test-accounts">
+                <label for="test-accounts">Show Test Accounts</label>
+            </div>
+            <span>Welcome, Tier 2 Agent</span>
+        </div>
     </div>
-    <div id="popup-content">
-      <p>The customer has a <strong>1 Year</strong> policy for an agreement price in the amount of <strong>$500.00</strong>. Policy started on <strong>01/01/2025</strong>.</p>
-      <p>Up to date, the customer has paid <strong>$500.00</strong> in premiums, and <strong>$255.00</strong> in PCFs (3 claims × $85), totaling <strong>$755.00</strong>.</p>
-      <p><strong>Claim Expenses:</strong></p>
-      <ul>
-        <li>TN:HE-000000001 – $200.00 paid to Technician</li>
-        <li>TN:HE-000000002 – $300.00 paid to Supplier</li>
-        <li>TN:HE-000000003 – $200.00 payout to Customer</li>
-      </ul>
-      <p><strong>We have in-house:</strong> $55.00</p>
-      <textarea placeholder="Our approach..."></textarea>
-      <br><br>
-      <button class="btn">Save Approach</button>
-    </div>
-  </div>
 
-  <script>
-    function openPopup(name) {
-      document.getElementById('popup').style.display = 'block';
-    }
-    function closePopup() {
-      document.getElementById('popup').style.display = 'none';
-    }
-  </script>
+    <div class="container">
+        <div class="toolbar">
+            <div class="filter-group">
+                <label>Show:</label>
+                <select id="entries">
+                    <option value="50">50</option>
+                    <option value="100" selected>100</option>
+                    <option value="250">250</option>
+                    <option value="all">All</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>From:</label>
+                <input type="date" id="from-date">
+                <label>To:</label>
+                <input type="date" id="to-date">
+            </div>
+            
+            <div class="filter-group">
+                <label>Platform:</label>
+                <select id="platform">
+                    <option value="all">All</option>
+                    <option value="google">Google</option>
+                    <option value="bbb">BBB</option>
+                    <option value="trustpilot">Trustpilot</option>
+                </select>
+            </div>
+            
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+            </div>
+        </div>
+
+        <div class="content-area">
+            <table id="reviewsTable">
+                <thead>
+                    <tr>
+                        <th>Create</th>
+                        <th>Customer Name</th>
+                        <th>Policy Number</th>
+                        <th>Policy Term</th>
+                        <th>Total Claims</th>
+                        <th>Total Paid</th>
+                        <th>Total In House</th>
+                        <th>Total Expense</th>
+                        <th>Our Approach</th>
+                        <th>Assigned Agent</th>
+                        <th>Review Outcome</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-id="1">
+                        <td><button class="btn" onclick="openModal(1)">Create</button></td>
+                        <td>John Smith</td>
+                        <td>LH-10001</td>
+                        <td>1 Yr</td>
+                        <td>2</td>
+                        <td>$1,035.00</td>
+                        <td class="highlight">$835.00</td>
+                        <td>$200.00</td>
+                        <td class="tooltip">Offer discount on renewal<span class="tooltiptext">Full approach: Offer 10% discount on renewal if customer updates review to 4 stars</span></td>
+                        <td>
+                            <select class="agent-select" onchange="updateReviewOutcome(this, 1)">
+                                <option value="">Unassigned</option>
+                                <option value="Sarah Johnson">Sarah Johnson</option>
+                                <option value="Michael Chen" selected>Michael Chen</option>
+                                <option value="David Wilson">David Wilson</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="outcome-select" id="outcome-1" onchange="handleOutcomeChange(this, 1)">
+                                <option value="">Pending</option>
+                                <option value="removed">Removed</option>
+                                <option value="updated" selected>Updated</option>
+                                <option value="utr">UTR</option>
+                                <option value="loss">Loss</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr data-id="2">
+                        <td><button class="btn" onclick="openModal(2)">Create</button></td>
+                        <td>Emily Rodriguez</td>
+                        <td>LH-10045</td>
+                        <td>Monthly</td>
+                        <td>1</td>
+                        <td>$1,035.00</td>
+                        <td class="highlight">$735.00</td>
+                        <td>$300.00</td>
+                        <td class="tooltip">Partial refund issued<span class="tooltiptext">Full approach: Issued $50 refund for inconvenience, customer agreed to update review</span></td>
+                        <td>
+                            <select class="agent-select" onchange="updateReviewOutcome(this, 2)">
+                                <option value="">Unassigned</option>
+                                <option value="Sarah Johnson" selected>Sarah Johnson</option>
+                                <option value="Michael Chen">Michael Chen</option>
+                                <option value="David Wilson">David Wilson</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="outcome-select" id="outcome-2" onchange="handleOutcomeChange(this, 2)">
+                                <option value="">Pending</option>
+                                <option value="removed">Removed</option>
+                                <option value="updated" selected>Updated</option>
+                                <option value="utr">UTR</option>
+                                <option value="loss">Loss</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr data-id="3">
+                        <td><button class="btn" onclick="openModal(3)">Create</button></td>
+                        <td>Robert Johnson</td>
+                        <td>LH-10123</td>
+                        <td>5 Yr</td>
+                        <td>0</td>
+                        <td>$1,035.00</td>
+                        <td class="highlight">$1,035.00</td>
+                        <td>$0.00</td>
+                        <td class="tooltip">Service credit offered<span class="tooltiptext">Full approach: Offered free appliance check to address concerns</span></td>
+                        <td>
+                            <select class="agent-select" onchange="updateReviewOutcome(this, 3)">
+                                <option value="">Unassigned</option>
+                                <option value="Sarah Johnson">Sarah Johnson</option>
+                                <option value="Michael Chen">Michael Chen</option>
+                                <option value="David Wilson" selected>David Wilson</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="outcome-select" id="outcome-3" onchange="handleOutcomeChange(this, 3)">
+                                <option value="">Pending</option>
+                                <option value="removed">Removed</option>
+                                <option value="updated">Updated</option>
+                                <option value="utr" selected>UTR</option>
+                                <option value="loss">Loss</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr data-id="4">
+                        <td><button class="btn" onclick="openModal(4)">Create</button></td>
+                        <td>Lisa Wong</td>
+                        <td>LH-10256</td>
+                        <td>10 Yr</td>
+                        <td>3</td>
+                        <td>$1,035.00</td>
+                        <td class="highlight">$535.00</td>
+                        <td>$500.00</td>
+                        <td class="tooltip">Escalated to manager<span class="tooltiptext">Full approach: Escalated to regional manager for personal contact</span></td>
+                        <td>
+                            <select class="agent-select" onchange="updateReviewOutcome(this, 4)">
+                                <option value="" selected>Unassigned</option>
+                                <option value="Sarah Johnson">Sarah Johnson</option>
+                                <option value="Michael Chen">Michael Chen</option>
+                                <option value="David Wilson">David Wilson</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="outcome-select" id="outcome-4" onchange="handleOutcomeChange(this, 4)">
+                                <option value="" selected>Pending</option>
+                                <option value="removed">Removed</option>
+                                <option value="updated">Updated</option>
+                                <option value="utr">UTR</option>
+                                <option value="loss">Loss</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="pagination">
+                <div class="page-size">Showing 1 to 4 of 124 entries</div>
+                <div>
+                    <button class="btn-secondary">Previous</button>
+                    <button class="btn">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="approachModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Create Approach for <span id="customerName"></span></div>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="template-text">
+                The customer has a <strong><span id="policyTerm">1 Year</span></strong> policy for an agreement price of <strong>$<span id="agreementPrice">2,500.00</span></strong>. 
+                Policy started on <strong><span id="startDate">03/15/2023</span></strong>. 
+                Up to date, the customer has paid <strong>$<span id="premiumsPaid">935.00</span></strong> in premiums and <strong>$<span id="pcfsPaid">100.00</span></strong> in PCFs, totaling <strong>$<span id="totalPaid">1,035.00</span></strong>.
+            </div>
+            
+            <div class="expense-section">
+                <h3 style="margin-top: 0;">Claim Expenses</h3>
+                <div class="expense-item">
+                    <div class="expense-label">TN-PO:000001</div>
+                    <input type="number" class="expense-input" id="expense1" value="100.00" min="0" step="0.01" oninput="calculateInHouse()">
+                </div>
+                <div class="expense-item">
+                    <div class="expense-label">TN-PO:000002</div>
+                    <input type="number" class="expense-input" id="expense2" value="50.00" min="0" step="0.01" oninput="calculateInHouse()">
+                </div>
+                <div class="expense-item">
+                    <div class="expense-label">TN-PO:000003</div>
+                    <input type="number" class="expense-input" id="expense3" value="50.00" min="0" step="0.01" oninput="calculateInHouse()">
+                </div>
+            </div>
+            
+            <div class="in-house-display">
+                We have in-house: <strong>$<span id="inHouseAmount">00.00</span></strong> (Total Paid: $<span id="displayTotalPaid">1,035.00</span> - Total Expenses: $<span id="totalExpenses">200.00</span>)
+            </div>
+            
+            <div class="approach-section">
+                <h3 style="margin-top: 0;">Our Approach</h3>
+                <textarea class="approach-textarea" id="approachText" placeholder="Enter the planned approach for this customer...">Offer 10% discount on renewal if customer updates review to 4 stars. Customer was unhappy with response time for their AC repair in July.</textarea>
+            </div>
+            
+            <div class="agent-assignment">
+                <h3 style="margin-top: 0;">Assign Agent</h3>
+                <select class="agent-select" id="agentSelect" onchange="toggleReviewOutcomeSection()">
+                    <option value="">Select Agent</option>
+                    <option value="Sarah Johnson">Sarah Johnson</option>
+                    <option value="Michael Chen" selected>Michael Chen</option>
+                    <option value="David Wilson">David Wilson</option>
+                </select>
+            </div>
+            
+            <div class="review-outcome-section" id="reviewOutcomeSection">
+                <h3 style="margin-top: 0;">Review Outcome</h3>
+                <select id="reviewOutcomeSelect" onchange="handleReviewOutcomeChange()">
+                    <option value="">Select outcome</option>
+                    <option value="removed">Pending</option>
+                    <option value="removed">Removed</option>
+                    <option value="updated">Updated</option>
+                    <option value="utr">UTR</option>
+                    <option value="loss">Loss</option>
+                </select>
+                
+                <div class="new-rating-group" id="newRatingGroup">
+                    <label for="newRating">New Star Rating</label>
+                    <select id="newRating">
+                        <option value="1">1 Star</option>
+                        <option value="2">2 Stars</option>
+                        <option value="3">3 Stars</option>
+                        <option value="4" selected>4 Stars</option>
+                        <option value="5">5 Stars</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="policy-note" id="policyNotePreview" style="display: none;">
+                <strong>Policy Note Preview:</strong><br>
+                "This Customer is being handled by Brand MGMT | @<span id="agentNamePreview"></span> Please refer to the module for the approach"
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn" onclick="saveApproach()">Submit Approach</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCustomerId = null;
+        let currentTotalPaid = 1035.00; // Default from example data
+        
+        // Modal functions
+        function openModal(customerId) {
+            currentCustomerId = customerId;
+            const row = document.querySelector(`tr[data-id="${customerId}"]`);
+            
+            if (!row) {
+                console.error('Row not found for customer ID:', customerId);
+                return;
+            }
+            
+            // Get data from the table row
+            const customerName = row.cells[1].textContent;
+            const policyNumber = row.cells[2].textContent;
+            const policyTerm = row.cells[3].textContent;
+            const totalClaims = row.cells[4].textContent;
+            const totalPaid = parseFloat(row.cells[5].textContent.replace('$', '').replace(',', ''));
+            const totalInHouse = row.cells[6].textContent;
+            const totalExpense = row.cells[7].textContent;
+            const approachText = row.cells[8].textContent;
+            const agentSelect = row.querySelector('.agent-select');
+            const outcomeSelect = row.querySelector('.outcome-select');
+            
+            // Set modal values
+            document.getElementById('customerName').textContent = customerName;
+            document.getElementById('policyTerm').textContent = policyTerm;
+            document.getElementById('premiumsPaid').textContent = (totalPaid - 100).toFixed(2);
+            document.getElementById('pcfsPaid').textContent = '100.00';
+            document.getElementById('totalPaid').textContent = totalPaid.toFixed(2);
+            
+            // Set agreement price based on policy term
+            let agreementPrice = '2,500.00';
+            if (policyTerm === 'Monthly') agreementPrice = '1,200.00';
+            if (policyTerm === '5 Yr') agreementPrice = '5,000.00';
+            if (policyTerm === '10 Yr') agreementPrice = '8,000.00';
+            document.getElementById('agreementPrice').textContent = agreementPrice;
+            
+            // Set start date based on policy term (just for demo)
+            let startDate = '03/15/2023';
+            if (policyTerm === 'Monthly') startDate = '02/10/2024';
+            if (policyTerm === '5 Yr') startDate = '11/22/2022';
+            if (policyTerm === '10 Yr') startDate = '09/05/2021';
+            document.getElementById('startDate').textContent = startDate;
+            
+            // Set expenses (for demo, we'll calculate backwards from total expense)
+            const expenseTotal = parseFloat(totalExpense.replace('$', '').replace(',', ''));
+            document.getElementById('expense1').value = (expenseTotal * 0.5).toFixed(2);
+            document.getElementById('expense2').value = (expenseTotal * 0.25).toFixed(2);
+            document.getElementById('expense3').value = (expenseTotal * 0.25).toFixed(2);
+            
+            document.getElementById('approachText').value = approachText;
+            document.getElementById('agentSelect').value = agentSelect ? agentSelect.value : '';
+            document.getElementById('reviewOutcomeSelect').value = outcomeSelect ? outcomeSelect.value : '';
+            
+            currentTotalPaid = totalPaid;
+            
+            // Calculate initial in-house value
+            calculateInHouse();
+            document.getElementById('approachModal').style.display = 'flex';
+            
+            // Initialize review outcome section based on current agent assignment
+            toggleReviewOutcomeSection();
+            
+            // Show/hide policy note preview based on agent selection
+            if (agentSelect && agentSelect.value) {
+                document.getElementById('policyNotePreview').style.display = 'block';
+                document.getElementById('agentNamePreview').textContent = agentSelect.value;
+            } else {
+                document.getElementById('policyNotePreview').style.display = 'none';
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('approachModal').style.display = 'none';
+            currentCustomerId = null;
+        }
+        
+        // Save the approach to the table
+        function saveApproach() {
+            if (!currentCustomerId) {
+                alert('No customer selected');
+                return;
+            }
+            
+            const row = document.querySelector(`tr[data-id="${currentCustomerId}"]`);
+            if (!row) {
+                alert('Customer row not found');
+                return;
+            }
+            
+            const approachText = document.getElementById('approachText').value;
+            const agentName = document.getElementById('agentSelect').value;
+            const reviewOutcome = document.getElementById('reviewOutcomeSelect').value;
+            
+            if (!agentName) {
+                alert('Please select an agent before submitting');
+                return;
+            }
+            
+            // Update approach text
+            row.cells[8].textContent = approachText;
+            row.cells[8].querySelector('.tooltiptext').textContent = 'Full approach: ' + approachText;
+            
+            // Update agent assignment
+            const agentSelect = row.querySelector('.agent-select');
+            if (agentSelect) {
+                agentSelect.value = agentName;
+            }
+            
+            // Update review outcome
+            const outcomeSelect = row.querySelector('.outcome-select');
+            if (outcomeSelect && reviewOutcome) {
+                outcomeSelect.value = reviewOutcome;
+            }
+            
+            // Get expense values
+            const expense1 = parseFloat(document.getElementById('expense1').value) || 0;
+            const expense2 = parseFloat(document.getElementById('expense2').value) || 0;
+            const expense3 = parseFloat(document.getElementById('expense3').value) || 0;
+            const totalExpenses = expense1 + expense2 + expense3;
+            const inHouse = currentTotalPaid - totalExpenses;
+            
+            // Update table values
+            row.cells[6].textContent = '$' + inHouse.toFixed(2);
+            row.cells[7].textContent = '$' + totalExpenses.toFixed(2);
+            
+            // Generate policy note (in a real system this would be sent to the backend)
+            const policyNote = `This Customer is being handled by Brand MGMT | @${agentName} Please refer to the module for the approach`;
+            console.log('Policy Note Added:', policyNote);
+            
+            // Handle review outcome actions
+            if (reviewOutcome === 'utr') {
+                const customerName = document.getElementById('customerName').textContent;
+                const agentFirstName = agentName.split(' ')[0];
+                const utrEmail = `Hello ${customerName},\n\nI hope this email finds you well. My name is ${agentName}, and I'm a Senior Manager representing the Customer Success Department here at Liberty Home Guard.\n\nYour experience with my department was recently brought to my attention following the feedback we received. We would like the opportunity to discuss your concerns and explore potential resolutions.\n\nUnfortunately, I was unable to reach you. Please let me know a convenient time for us to connect.\n\nBest regards,\n${agentFirstName}`;
+                console.log('UTR Email Sent:', utrEmail);
+            } else if (reviewOutcome === 'loss') {
+                console.log('CRM Note Added: "Brand MGMT considers this customer a loss. Please proceed normally."');
+            }
+            
+            alert('Approach saved successfully!\nPolicy Note: ' + policyNote);
+            closeModal();
+        }
+        
+        // Dynamic in-house calculation
+        function calculateInHouse() {
+            const expense1 = parseFloat(document.getElementById('expense1').value) || 0;
+            const expense2 = parseFloat(document.getElementById('expense2').value) || 0;
+            const expense3 = parseFloat(document.getElementById('expense3').value) || 0;
+            const totalExpenses = expense1 + expense2 + expense3;
+            const inHouse = currentTotalPaid - totalExpenses;
+            
+            document.getElementById('inHouseAmount').textContent = inHouse.toFixed(2);
+            document.getElementById('totalExpenses').textContent = totalExpenses.toFixed(2);
+            document.getElementById('displayTotalPaid').textContent = currentTotalPaid.toFixed(2);
+        }
+        
+        // Toggle review outcome section based on agent assignment
+        function toggleReviewOutcomeSection() {
+            const agentSelect = document.getElementById('agentSelect');
+            const reviewOutcomeSection = document.getElementById('reviewOutcomeSection');
+            
+            if (agentSelect.value) {
+                reviewOutcomeSection.style.display = 'block';
+            } else {
+                reviewOutcomeSection.style.display = 'none';
+            }
+        }
+        
+        // Handle review outcome selection changes
+        function handleReviewOutcomeChange() {
+            const outcomeSelect = document.getElementById('reviewOutcomeSelect');
+            const newRatingGroup = document.getElementById('newRatingGroup');
+            
+            if (outcomeSelect.value === 'updated') {
+                newRatingGroup.style.display = 'block';
+            } else {
+                newRatingGroup.style.display = 'none';
+            }
+        }
+        
+        // Update review outcome dropdown when agent is assigned in table
+        function updateReviewOutcome(selectElement, rowId) {
+            const outcomeSelect = document.getElementById(`outcome-${rowId}`);
+            
+            if (selectElement.value) {
+                outcomeSelect.disabled = false;
+            } else {
+                outcomeSelect.disabled = true;
+                outcomeSelect.value = '';
+            }
+        }
+        
+        // Handle review outcome changes in table
+        function handleOutcomeChange(selectElement, rowId) {
+            const outcome = selectElement.value;
+            const agentSelect = document.querySelector(`tr[data-id="${rowId}"] .agent-select`);
+            
+            if (outcome && !agentSelect.value) {
+                alert('Please assign an agent first');
+                selectElement.value = '';
+                return;
+            }
+            
+            if (outcome === 'utr') {
+                const customerName = document.querySelector(`tr[data-id="${rowId}"] td:nth-child(2)`).textContent;
+                const agentName = agentSelect.value;
+                const agentFirstName = agentName.split(' ')[0];
+                const utrEmail = `Hello ${customerName},\n\nI hope this email finds you well. My name is ${agentName}, and I'm a Senior Manager representing the Customer Success Department here at Liberty Home Guard.\n\nYour experience with my department was recently brought to my attention following the feedback we received. We would like the opportunity to discuss your concerns and explore potential resolutions.\n\nUnfortunately, I was unable to reach you. Please let me know a convenient time for us to connect.\n\nBest regards,\n${agentFirstName}`;
+                console.log('UTR Email Sent:', utrEmail);
+            } else if (outcome === 'loss') {
+                console.log(`CRM Note Added for row ${rowId}: "Brand MGMT considers this customer a loss. Please proceed normally."`);
+            }
+        }
+        
+        // Close modal when clicking outside content
+        window.onclick = function(event) {
+            const modal = document.getElementById('approachModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
 </body>
 </html>
